@@ -7,6 +7,7 @@
 //
 
 #import "FISDataStore.h"
+#import "FISMessage+CoreDataProperties.h"
 
 @implementation FISDataStore
 @synthesize managedObjectContext = _managedObjectContext;
@@ -35,10 +36,41 @@
     }
 }
 
-//- (void)fetchData
-//{
+- (void)fetchData
+{
     // perform a fetch request to fill an array property on your datastore
-//}
+    // fetchData NSFetchRequest > execute messages.
+    //self.messages is an NSArray, we don't have to alloc/init IT because we are having it equal something that RETURNS an NSarray.
+
+    NSFetchRequest * request = [NSFetchRequest fetchRequestWithEntityName:@"FISMessage"];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"creatAt"
+                                                                     ascending:YES];
+    request.sortDescriptors = @[ sortDescriptor ];
+    self.messages = [self.managedObjectContext executeFetchRequest:request error:nil];
+    
+    if (self.messages.count == 0) {
+        [self generateTestData];
+        [self fetchData];
+    }
+}
+
+
+- (void)generateTestData {
+    
+    FISMessage * message1 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:self.managedObjectContext];
+    message1.content = @"so sunny";
+    message1.creatAt = [NSDate dateWithTimeIntervalSinceNow:-500];
+    
+    FISMessage * message2 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:self.managedObjectContext];
+    message2.content = @"so flat";
+    message2.creatAt = [NSDate dateWithTimeIntervalSinceNow:100];
+    
+    FISMessage * message3 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:self.managedObjectContext];
+    message3.content = @"so peaceful";
+    message3.creatAt = [NSDate dateWithTimeIntervalSinceNow:9500];
+    
+    [self saveContext];
+}
 
 #pragma mark - Core Data Stack
 
@@ -50,11 +82,11 @@
         return _managedObjectContext;
     }
     
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"<#XCDATAMODELD_NAME#>.sqlite"];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"slapChat.sqlite"];
 
     NSError *error = nil;
 
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"<#XCDATAMODELD_NAME#>" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"slapChat" withExtension:@"momd"];
     NSManagedObjectModel *managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
 

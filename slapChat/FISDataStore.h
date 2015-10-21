@@ -10,7 +10,8 @@
 
 @interface FISDataStore : NSObject
 
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, strong, nonatomic)NSManagedObjectContext *managedObjectContext;
+@property(strong,nonatomic)NSMutableArray * messages;
 
 + (instancetype) sharedDataStore;
 - (void) saveContext;

@@ -7,9 +7,12 @@
 //
 
 #import "FISTableViewController.h"
+#import "FISDataStore.h"
+#import "FISMessage.h"
 
 @interface FISTableViewController ()
 
+@property(nonatomic,strong)NSArray * messages;
 @end
 
 @implementation FISTableViewController
@@ -17,22 +20,63 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    /*
+     NOTE: logic dataStore.message.count for checking, not if it exists or not. As it always exists as a property
+         [dataStore fetchData];
+         if (dataStore.messages.count == 0) {
+             [self generateTestData];
+         }
+     */
+    FISDataStore * dataStore = [FISDataStore sharedDataStore];
+    [dataStore fetchData];
+    self.messages = dataStore.messages;
+    
+    NSLog(@"Messages should be all setup, what is the count of self.messages: %ld", self.messages.count);
 }
 
-#pragma mark - Table view data source
+-(void)viewWillAppear:(BOOL)animated{
 
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-//{
-//    // Return the number of rows in the section.
-//}
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
+}
 
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#reuseIdentifier#> forIndexPath:indexPath];
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    NSLog(@"When does this get called!");
+    return self.messages.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    NSLog(@"Creating a new cell!!!");
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dataCell" forIndexPath:indexPath];
+
+    cell.textLabel.text = [self.messages[indexPath.row] content];
+    return cell;
+}
+
+//-(void)generateTestData{
 //
-//    // Configure the cell...
-//    
-//    return cell;
+//    FISDataStore * dataStore = [FISDataStore sharedDataStore];
+//
+//    FISMessage * message1 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:dataStore.managedObjectContext];
+//    message1.content = @"so sunny";
+//    message1.creatAt = [NSDate dateWithTimeIntervalSinceNow:-500];
+//
+//    FISMessage * message2 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:dataStore.managedObjectContext];
+//    message2.content = @"so flat";
+//    message2.creatAt = [NSDate dateWithTimeIntervalSinceNow:100];
+//
+//    FISMessage * message3 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:dataStore.managedObjectContext];
+//    message3.content = @"so peaceful";
+//    message3.creatAt = [NSDate dateWithTimeIntervalSinceNow:9500];
+//
+//    [dataStore saveContext];
+//
 //}
 
 @end
+
+
