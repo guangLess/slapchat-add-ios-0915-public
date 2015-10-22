@@ -9,8 +9,17 @@
 #import "FISDataStore.h"
 #import "FISMessage+CoreDataProperties.h"
 
+@interface FISDataStore ()
+@property(strong,nonatomic,readwrite)NSArray * messages;
+@end
+
 @implementation FISDataStore
+
+
+
 @synthesize managedObjectContext = _managedObjectContext;
+
+
 
 + (instancetype)sharedDataStore {
     static FISDataStore *_sharedDataStore = nil;
@@ -44,7 +53,7 @@
 
     NSFetchRequest * request = [NSFetchRequest fetchRequestWithEntityName:@"FISMessage"];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"creatAt"
-                                                                     ascending:YES];
+                                                                     ascending:NO];
     request.sortDescriptors = @[ sortDescriptor ];
     self.messages = [self.managedObjectContext executeFetchRequest:request error:nil];
     
@@ -59,11 +68,24 @@
     
     FISMessage * message1 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:self.managedObjectContext];
     message1.content = @"so sunny";
-    message1.creatAt = [NSDate dateWithTimeIntervalSinceNow:-500];
+    message1.creatAt = [NSDate dateWithTimeIntervalSinceNow:-500]; //[dateFormatter setDateFormat:@"E, d M y"];
+    
+    /*
+     NSString* dateString = "2011-08-12T12:20:00Z";
+     NSDateFormatter* fmt = [NSDateFormatter new];
+     [fmt setDateFormat:"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+     NSDate* date = [fmt dateFromString:dateString];
+     */
+    
+    NSDateFormatter* fmt = [NSDateFormatter new];
+    [fmt setDateFormat:@"yyyy-MM-dd"];
+    NSString * dateString1 = @"2011-08-12";
+    NSDate * date1 = [fmt dateFromString:dateString1];
+
     
     FISMessage * message2 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:self.managedObjectContext];
     message2.content = @"so flat";
-    message2.creatAt = [NSDate dateWithTimeIntervalSinceNow:100];
+    message2.creatAt = date1;
     
     FISMessage * message3 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:self.managedObjectContext];
     message3.content = @"so peaceful";

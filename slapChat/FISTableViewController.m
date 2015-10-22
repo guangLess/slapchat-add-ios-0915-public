@@ -13,6 +13,8 @@
 @interface FISTableViewController ()
 
 @property(nonatomic,strong)NSArray * messages;
+@property(nonatomic,strong)FISDataStore * dataStore;
+
 @end
 
 @implementation FISTableViewController
@@ -27,17 +29,27 @@
              [self generateTestData];
          }
      */
-    FISDataStore * dataStore = [FISDataStore sharedDataStore];
-    [dataStore fetchData];
-    self.messages = dataStore.messages;
+    self.dataStore = [FISDataStore sharedDataStore];
+    [self reloadData];
+    
+    //[self.dataStore fetchData];
+    //self.messages = self.dataStore.messages;
     
     NSLog(@"Messages should be all setup, what is the count of self.messages: %ld", self.messages.count);
 }
 
+
+-(void)reloadData{
+    
+    [self.dataStore fetchData];
+    self.messages = self.dataStore.messages;
+    [self.tableView reloadData];
+    
+}
 -(void)viewWillAppear:(BOOL)animated{
 
     [super viewWillAppear:animated];
-    [self.tableView reloadData];
+    [self reloadData];
 }
 
 
@@ -54,6 +66,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dataCell" forIndexPath:indexPath];
 
     cell.textLabel.text = [self.messages[indexPath.row] content];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",[self.messages[indexPath.row] creatAt]];
     return cell;
 }
 

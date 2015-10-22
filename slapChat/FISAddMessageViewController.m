@@ -14,6 +14,7 @@
 - (IBAction)cancelButton:(id)sender;
 - (IBAction)saveButton:(id)sender;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
+@property (nonatomic, strong) FISDataStore * dataStore;
 
 @end
 
@@ -21,7 +22,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self.textField becomeFirstResponder]; // add the keyboard first.
     // Do any additional setup after loading the view.
+    self.dataStore = [FISDataStore sharedDataStore];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,16 +39,15 @@
 
 - (IBAction)saveButton:(id)sender {
     
-    FISDataStore * dataStore = [FISDataStore sharedDataStore];
 //    [dataStore fetchData];
     
 //    if (![dataStore.messages containsObject:content]){
 //    [dataStore.messages addObject:content];
 //    [dataStore saveContext];
 //    }
-    FISMessage * addMessage = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:dataStore.managedObjectContext];
+    FISMessage * addMessage = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:self.dataStore.managedObjectContext];
     addMessage.content =  self.textField.text;
-    [dataStore saveContext];
+    [self.dataStore saveContext];
     [self dismissViewControllerAnimated:YES completion:nil];
     
     //model -> present or dismiss
