@@ -14,6 +14,7 @@
 
 @property(nonatomic,strong)NSArray * messages;
 @property(nonatomic,strong)FISDataStore * dataStore;
+- (IBAction)sortButton:(id)sender;
 
 @end
 
@@ -70,6 +71,10 @@
     return cell;
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    
+    
+}
 //-(void)generateTestData{
 //
 //    FISDataStore * dataStore = [FISDataStore sharedDataStore];
@@ -90,6 +95,20 @@
 //
 //}
 
+- (IBAction)sortButton:(id)sender {
+
+
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"creatAt"
+                                                                ascending:YES];
+    self.messages = [self.messages sortedArrayUsingDescriptors:@[sortDescriptor]];
+    [self.tableView reloadData];
+    
+    //NSArray *arrayDescriptor = @[ sortDescriptor ];
+    //    NSMutableArray * messageM = [self.messages mutableCopy];
+    //    [messageM sortUsingDescriptors: arrayDescriptor ];
+    //    self.messages = messageM;
+    
+}
 @end
 
 

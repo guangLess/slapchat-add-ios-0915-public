@@ -52,9 +52,6 @@
     //self.messages is an NSArray, we don't have to alloc/init IT because we are having it equal something that RETURNS an NSarray.
 
     NSFetchRequest * request = [NSFetchRequest fetchRequestWithEntityName:@"FISMessage"];
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"creatAt"
-                                                                     ascending:NO];
-    request.sortDescriptors = @[ sortDescriptor ];
     self.messages = [self.managedObjectContext executeFetchRequest:request error:nil];
     
     if (self.messages.count == 0) {
@@ -68,7 +65,7 @@
     
     FISMessage * message1 = [NSEntityDescription insertNewObjectForEntityForName:@"FISMessage" inManagedObjectContext:self.managedObjectContext];
     message1.content = @"so sunny";
-    message1.creatAt = [NSDate dateWithTimeIntervalSinceNow:-500]; //[dateFormatter setDateFormat:@"E, d M y"];
+    message1.creatAt = [NSDate dateWithTimeIntervalSinceNow:-8888500]; //[dateFormatter setDateFormat:@"E, d M y"];
     
     /*
      NSString* dateString = "2011-08-12T12:20:00Z";
@@ -79,7 +76,7 @@
     
     NSDateFormatter* fmt = [NSDateFormatter new];
     [fmt setDateFormat:@"yyyy-MM-dd"];
-    NSString * dateString1 = @"2011-08-12";
+    NSString * dateString1 = @"2001-08-12";
     NSDate * date1 = [fmt dateFromString:dateString1];
 
     
